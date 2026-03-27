@@ -766,14 +766,14 @@ const PLAYS = [
   },
   {
     name: 'Reverse',
-    desc: 'TRICK! QB hands off to RB going right, RB hands off to WR Left going left!',
+    desc: 'TRICK! RB takes handoff going left, hands off to WR Left running right into cleared space!',
     tags: ['Trick','Misdirection'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
+    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[62,73] },
     routes: {
-      wr1: [[14,66],[14,72],[60,72],[8,30]],
-      wr2: [[86,66],[86,56],[72,56]],
-      c:   [[50,66],[62,58]],
-      rb:  [[50,80],[50,73],[60,73]]
+      rb:  [[62,73],[38,73]],
+      wr1: [[14,66],[14,71],[38,71],[88,32]],
+      wr2: [[86,66],[86,22]],
+      c:   [[50,66],[72,28]]
     },
     isRun: true,
     reads: { wr1:1, wr2:2, c:3, rb:4 }
