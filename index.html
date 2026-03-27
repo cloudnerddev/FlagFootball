@@ -431,11 +431,11 @@ footer {
   <h2>Our 10 Plays</h2>
   <p class="subtitle">Click any play to watch the routes animate. Each player has a color-coded route.</p>
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--qb-color)"></div>QB</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--c-color)"></div>Center</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--wr1-color)"></div>WR Left</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--wr2-color)"></div>WR Right</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--rb-color)"></div>RB</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--qb-color)"></div>#1 QB</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-color)"></div>#2 Center</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--wr1-color)"></div>#3 WR Left</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--wr2-color)"></div>#4 WR Right</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--rb-color)"></div>#5 RB</div>
   </div>
   <div class="plays-grid" id="playsGrid"></div>
 </section>
@@ -549,7 +549,8 @@ const COLORS = {
 };
 
 const POSITIONS = ['qb','c','wr1','wr2','rb'];
-const POS_LABELS = { qb:'QB', c:'C', wr1:'WR', wr2:'WR', rb:'RB' };
+const POS_LABELS = { qb:'1', c:'2', wr1:'3', wr2:'4', rb:'5' };
+const POS_NAMES = { qb:'QB', c:'Center', wr1:'WR Left', wr2:'WR Right', rb:'RB' };
 
 const PLAYS = [
   {
@@ -988,12 +989,10 @@ function renderPbPlay() {
 
   const radius = Math.max(14, w * 0.035);
   const lineW = Math.max(3, w * 0.007);
-  let routeNum = 1;
-  const posOrder = ['wr1','wr2','c','rb'];
+  const posOrder = ['qb','c','wr1','wr2','rb'];
   posOrder.forEach(pos => {
     if (!play.routes[pos]) return;
-    drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW, routeNum);
-    routeNum++;
+    drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW, POS_LABELS[pos]);
   });
 
   POSITIONS.forEach(pos => {
@@ -1027,14 +1026,10 @@ function renderPbPlay() {
 
 function renderPbLegend(play) {
   const legend = document.getElementById('pbLegend');
-  let routeNum = 1;
   const items = [];
-  const posOrder = ['wr1','wr2','c','rb'];
-  const labels = { wr1:'WR Left', wr2:'WR Right', c:'Center', rb:'RB' };
+  const posOrder = ['qb','c','wr1','wr2','rb'];
   posOrder.forEach(pos => {
-    if (!play.routes[pos]) return;
-    items.push(`<span><span class="pb-legend-dot" style="background:${COLORS[pos]}"></span>${routeNum} ${labels[pos]}</span>`);
-    routeNum++;
+    items.push(`<span><span class="pb-legend-dot" style="background:${COLORS[pos]}"></span>#${POS_LABELS[pos]} ${POS_NAMES[pos]}</span>`);
   });
   legend.innerHTML = items.join('');
 }
