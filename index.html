@@ -649,6 +649,7 @@ const PLAYS = [
     tags: ['Deep','Aggressive'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,82]],
       wr1: [[14,66],[14,12]],
       wr2: [[86,66],[86,12]],
       c:   [[50,66],[50,18]],
@@ -662,6 +663,7 @@ const PLAYS = [
     tags: ['Quick','Short'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,78]],
       wr1: [[14,66],[14,56],[38,38]],
       wr2: [[86,66],[86,56],[62,38]],
       c:   [[50,66],[50,50]],
@@ -675,6 +677,7 @@ const PLAYS = [
     tags: ['Medium','Safe'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,80]],
       wr1: [[14,66],[14,44],[4,44]],
       wr2: [[86,66],[86,44],[96,44]],
       c:   [[50,66],[35,50]],
@@ -688,6 +691,7 @@ const PLAYS = [
     tags: ['Tricky','Medium'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,80]],
       wr1: [[14,66],[14,56],[78,38]],
       wr2: [[86,66],[86,52],[22,35]],
       c:   [[50,66],[50,48]],
@@ -701,6 +705,7 @@ const PLAYS = [
     tags: ['Deep','Stretch'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,82]],
       wr1: [[14,66],[14,44],[38,14]],
       wr2: [[86,66],[86,44],[96,16]],
       c:   [[50,66],[68,50]],
@@ -714,6 +719,7 @@ const PLAYS = [
     tags: ['Combo','Short'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,79]],
       wr1: [[14,66],[14,38],[20,43]],
       wr2: [[86,66],[86,56],[96,56]],
       c:   [[50,66],[50,22]],
@@ -727,6 +733,7 @@ const PLAYS = [
     tags: ['Quick','Run After Catch'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[53,78]],
       wr1: [[14,66],[14,20]],
       wr2: [[86,66],[86,22]],
       c:   [[50,66],[60,60]],
@@ -740,6 +747,7 @@ const PLAYS = [
     tags: ['Formation','Flood'],
     start: { qb:[50,73], c:[50,66], wr1:[68,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,80]],
       wr1: [[68,66],[68,44],[90,18]],
       wr2: [[86,66],[86,46],[80,46]],
       c:   [[50,66],[78,54]],
@@ -753,6 +761,7 @@ const PLAYS = [
     tags: ['Deep','Zone Beater'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[50,82]],
       wr1: [[14,66],[14,44],[36,14]],
       wr2: [[86,66],[86,44],[64,14]],
       c:   [[50,66],[50,44],[28,44]],
@@ -766,6 +775,7 @@ const PLAYS = [
     tags: ['Run','Outside'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[58,73]],
       wr1: [[14,66],[14,56],[28,56]],
       wr2: [[86,66],[86,56],[72,56]],
       c:   [[50,66],[60,60]],
@@ -780,6 +790,7 @@ const PLAYS = [
     tags: ['Trick','Deep'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
     routes: {
+      qb:  [[50,73],[40,73]],
       wr1: [[14,66],[36,73]],
       wr2: [[86,66],[86,18]],
       c:   [[50,66],[68,42]],
@@ -794,6 +805,7 @@ const PLAYS = [
     tags: ['Trick','Misdirection'],
     start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[62,73] },
     routes: {
+      qb:  [[50,73],[44,73]],
       rb:  [[62,73],[38,73]],
       wr1: [[14,66],[14,71],[38,71],[88,32]],
       wr2: [[86,66],[86,22]],
@@ -875,8 +887,9 @@ function drawArrow(ctx, x1, y1, x2, y2, color, lineW) {
   ctx.fill();
 }
 
-function drawRoute(ctx, pts, w, h, color, lineW, progress) {
+function drawRoute(ctx, pts, w, h, color, lineW, progress, dashed) {
   if (pts.length < 2) return;
+  if (dashed) ctx.setLineDash([8,6]); else ctx.setLineDash([]);
   const scaled = pts.map(p => [p[0] / 100 * w, p[1] / 100 * h]);
   let totalLen = 0;
   const segs = [];
@@ -914,6 +927,7 @@ function drawRoute(ctx, pts, w, h, color, lineW, progress) {
     }
   }
   ctx.stroke();
+  ctx.setLineDash([]);
   if (progress >= 1) {
     const last2 = scaled[scaled.length - 2];
     const last1 = scaled[scaled.length - 1];
@@ -922,20 +936,21 @@ function drawRoute(ctx, pts, w, h, color, lineW, progress) {
   return [endX, endY];
 }
 
-function drawFullRoute(ctx, pts, w, h, color, lineW, routeNum) {
+function drawFullRoute(ctx, pts, w, h, color, lineW, routeNum, dashed) {
   if (pts.length < 2) return;
   const scaled = pts.map(p => [p[0] / 100 * w, p[1] / 100 * h]);
   ctx.strokeStyle = color;
   ctx.lineWidth = lineW;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.setLineDash([]);
+  ctx.setLineDash(dashed ? [8,6] : []);
   ctx.beginPath();
   ctx.moveTo(scaled[0][0], scaled[0][1]);
   for (let i = 1; i < scaled.length; i++) {
     ctx.lineTo(scaled[i][0], scaled[i][1]);
   }
   ctx.stroke();
+  ctx.setLineDash([]);
   const last2 = scaled[scaled.length - 2];
   const last1 = scaled[scaled.length - 1];
   const angle = Math.atan2(last1[1] - last2[1], last1[0] - last2[0]);
@@ -1008,23 +1023,24 @@ function drawPlayFrame(ctx, w, h, play, progress) {
   ctx.clearRect(0, 0, w, h);
   drawField(ctx, w, h);
   const radius = 14;
-  const posOrder = ['c','wr1','wr2','rb'];
-  posOrder.forEach(pos => {
+  const allPos = ['qb','c','wr1','wr2','rb'];
+  allPos.forEach(pos => {
     if (!play.routes[pos]) return;
     const pts = play.routes[pos];
-    const end = drawRoute(ctx, pts, w, h, COLORS[pos], 3, progress);
+    const dashed = (pos === 'qb');
+    const end = drawRoute(ctx, pts, w, h, COLORS[pos], 3, progress, dashed);
     if (progress > 0 && progress < 1 && end) {
       drawPlayer(ctx, end[0], end[1], COLORS[pos], getLabel(pos, play), radius * 0.8);
     }
   });
   POSITIONS.forEach(pos => {
     const s = play.start[pos];
-    if (progress === 0 || pos === 'qb') {
+    if (progress === 0) {
       drawPlayer(ctx, s[0] / 100 * w, s[1] / 100 * h, COLORS[pos], getLabel(pos, play), radius);
     }
   });
   if (progress >= 1) {
-    posOrder.forEach(pos => {
+    allPos.forEach(pos => {
       if (!play.routes[pos]) return;
       const pts = play.routes[pos];
       const last = pts[pts.length - 1];
@@ -1125,7 +1141,7 @@ function renderPbPlay() {
   const posOrder = ['qb','c','wr1','wr2','rb'];
   posOrder.forEach(pos => {
     if (!play.routes[pos]) return;
-    drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW);
+    drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW, undefined, pos === 'qb');
   });
 
   POSITIONS.forEach(pos => {
