@@ -992,7 +992,7 @@ function renderPbPlay() {
   const posOrder = ['qb','c','wr1','wr2','rb'];
   posOrder.forEach(pos => {
     if (!play.routes[pos]) return;
-    drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW, POS_LABELS[pos]);
+    drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW);
   });
 
   POSITIONS.forEach(pos => {
