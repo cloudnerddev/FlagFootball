@@ -273,74 +273,34 @@ footer {
 /* ───── PLAYBOOK PLAYER OVERLAY ───── */
 .pb-overlay {
   position: fixed; inset: 0; z-index: 1000;
-  background: var(--navy); display: none;
-  flex-direction: column;
+  background: #0a3d0a; display: none;
 }
-.pb-overlay.active { display: flex; }
-.pb-top {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 16px;
-  background: rgba(0,0,0,.4);
-  border-bottom: 2px solid var(--gold);
-  flex-shrink: 0;
-}
-.pb-top .pb-title {
-  font-family: 'Russo One', sans-serif;
-  font-size: .95rem; color: var(--gold);
-}
-.pb-top .pb-counter { font-size: .8rem; color: rgba(255,255,255,.6); }
-.pb-close {
-  background: none; border: none; color: var(--white);
-  font-size: 1.5rem; cursor: pointer; padding: 4px 8px;
-  transition: color .2s;
-}
-.pb-close:hover { color: var(--gold); }
-.pb-body {
-  flex: 1; display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-  touch-action: pan-y;
-}
-.pb-body canvas {
-  max-width: 100%; max-height: 100%;
+.pb-overlay.active { display: block; }
+.pb-overlay canvas {
+  display: block; width: 100%; height: 100%;
 }
 .pb-nav-btn {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 48px; height: 48px; border-radius: 50%;
-  background: rgba(255,215,0,.15); border: 2px solid rgba(255,215,0,.4);
-  color: var(--gold); font-size: 1.3rem; cursor: pointer;
+  position: fixed; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(0,0,0,.45); border: 2px solid rgba(255,215,0,.5);
+  color: var(--gold); font-size: 1.2rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all .2s; z-index: 10;
+  transition: all .2s; z-index: 1010;
 }
 .pb-nav-btn:hover { background: rgba(255,215,0,.3); }
-.pb-nav-btn.prev { left: 12px; }
-.pb-nav-btn.next { right: 12px; }
-.pb-bottom {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 10px 16px 14px; gap: 6px;
-  background: rgba(0,0,0,.4);
-  border-top: 1px solid rgba(255,255,255,.08);
-  flex-shrink: 0;
-}
-.pb-play-name {
-  font-family: 'Russo One', sans-serif;
-  font-size: 1.1rem;
-}
-.pb-play-desc { font-size: .78rem; color: rgba(255,255,255,.5); text-align: center; }
-.pb-dots { display: flex; gap: 8px; margin-top: 4px; }
-.pb-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: rgba(255,255,255,.2); cursor: pointer;
+.pb-nav-btn.prev { left: 6px; }
+.pb-nav-btn.next { right: 6px; }
+.pb-close {
+  position: fixed; top: 8px; right: 8px; z-index: 1010;
+  background: rgba(0,0,0,.5); border: 2px solid rgba(255,215,0,.5);
+  color: var(--gold); font-size: 1.1rem; cursor: pointer;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
   transition: all .2s;
 }
-.pb-dot.active { background: var(--gold); transform: scale(1.3); }
-.pb-legend {
-  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-  font-size: .7rem; margin-top: 2px;
-}
-.pb-legend span { display: flex; align-items: center; gap: 4px; }
-.pb-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+.pb-close:hover { background: rgba(255,215,0,.3); }
 .pb-rotate-hint {
-  position: absolute; inset: 0; z-index: 20;
+  position: fixed; inset: 0; z-index: 1020;
   background: rgba(10,22,40,.95);
   display: none; flex-direction: column;
   align-items: center; justify-content: center; gap: 16px;
@@ -659,22 +619,10 @@ document.addEventListener('DOMContentLoaded', () => {
     <p><strong>Rotate your phone to landscape</strong><br>for the best playbook experience</p>
     <button class="dismiss-btn" onclick="dismissRotateHint()">Got it — show plays</button>
   </div>
-  <div class="pb-top">
-    <span class="pb-title">GAME-DAY PLAYBOOK</span>
-    <span class="pb-counter" id="pbCounter">1 / 12</span>
-    <button class="pb-close" onclick="closePlaybook()" aria-label="Close">&#10005;</button>
-  </div>
-  <div class="pb-body" id="pbBody">
-    <canvas id="pbCanvas"></canvas>
-    <button class="pb-nav-btn prev" onclick="pbNav(-1)">&#10094;</button>
-    <button class="pb-nav-btn next" onclick="pbNav(1)">&#10095;</button>
-  </div>
-  <div class="pb-bottom">
-    <div class="pb-play-name" id="pbPlayName"></div>
-    <div class="pb-play-desc" id="pbPlayDesc"></div>
-    <div class="pb-legend" id="pbLegend"></div>
-    <div class="pb-dots" id="pbDots"></div>
-  </div>
+  <canvas id="pbCanvas"></canvas>
+  <button class="pb-nav-btn prev" onclick="pbNav(-1)">&#10094;</button>
+  <button class="pb-nav-btn next" onclick="pbNav(1)">&#10095;</button>
+  <button class="pb-close" onclick="closePlaybook()" aria-label="Close">&#10005;</button>
 </div>
 
 <script>
@@ -1129,7 +1077,6 @@ function openPlaybook() {
   pbIndex = 0;
   resizePbCanvas();
   renderPbPlay();
-  buildPbDots();
 }
 
 function closePlaybook() {
@@ -1142,40 +1089,39 @@ function dismissRotateHint() {
 }
 
 function resizePbCanvas() {
-  const body = document.getElementById('pbBody');
-  const maxW = body.clientWidth - 24;
-  const maxH = body.clientHeight - 24;
-  const aspect = 4 / 3;
-  let w, h;
-  if (maxW / maxH > aspect) {
-    h = maxH; w = h * aspect;
-  } else {
-    w = maxW; h = w / aspect;
-  }
-  pbCanvas.width = Math.floor(w * (window.devicePixelRatio || 1));
-  pbCanvas.height = Math.floor(h * (window.devicePixelRatio || 1));
-  pbCanvas.style.width = Math.floor(w) + 'px';
-  pbCanvas.style.height = Math.floor(h) + 'px';
-  pbCtx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
+  const dpr = window.devicePixelRatio || 1;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  pbCanvas.width = Math.floor(vw * dpr);
+  pbCanvas.height = Math.floor(vh * dpr);
+  pbCanvas.style.width = vw + 'px';
+  pbCanvas.style.height = vh + 'px';
+  pbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 function renderPbPlay() {
   const play = PLAYS[pbIndex];
-  const w = pbCanvas.width / (window.devicePixelRatio || 1);
-  const h = pbCanvas.height / (window.devicePixelRatio || 1);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
   pbCtx.clearRect(0, 0, pbCanvas.width, pbCanvas.height);
   drawField(pbCtx, w, h);
 
-  pbCtx.fillStyle = 'rgba(0,0,0,.45)';
-  pbCtx.fillRect(0, 0, w, 36);
+  const titleH = Math.max(32, h * 0.055);
+  pbCtx.fillStyle = 'rgba(0,0,0,.5)';
+  pbCtx.fillRect(0, 0, w, titleH);
   pbCtx.fillStyle = '#FFD740';
-  pbCtx.font = 'bold 14px Russo One, sans-serif';
-  pbCtx.textAlign = 'center';
+  const titleSize = Math.max(13, Math.min(18, w * 0.035));
+  pbCtx.font = `bold ${titleSize}px Russo One, sans-serif`;
+  pbCtx.textAlign = 'left';
   pbCtx.textBaseline = 'middle';
-  pbCtx.fillText(`PLAY ${pbIndex + 1}: ${play.name.toUpperCase()}`, w / 2, 18);
+  pbCtx.fillText(`${pbIndex + 1}. ${play.name.toUpperCase()}`, 12, titleH / 2);
+  pbCtx.textAlign = 'right';
+  pbCtx.fillStyle = 'rgba(255,255,255,.5)';
+  pbCtx.font = `bold ${Math.max(11, titleSize * 0.75)}px Nunito`;
+  pbCtx.fillText(`${pbIndex + 1} / ${PLAYS.length}`, w - 48, titleH / 2);
 
-  const radius = Math.max(14, w * 0.035);
-  const lineW = Math.max(3, w * 0.007);
+  const radius = Math.max(16, Math.min(w, h) * 0.04);
+  const lineW = Math.max(3, Math.min(w, h) * 0.008);
   const posOrder = ['qb','c','wr1','wr2','rb'];
   posOrder.forEach(pos => {
     if (!play.routes[pos]) return;
@@ -1200,7 +1146,7 @@ function renderPbPlay() {
     pbCtx.fill(); pbCtx.stroke();
     pbCtx.setLineDash([]);
     pbCtx.fillStyle = '#FF7043';
-    pbCtx.font = `bold ${Math.max(9, radius * 0.6)}px Nunito`;
+    pbCtx.font = `bold ${Math.max(10, radius * 0.6)}px Nunito`;
     pbCtx.textAlign = 'center';
     pbCtx.fillText('HANDOFF', endPt[0] / 100 * w, endPt[1] / 100 * h + radius * 2.5);
   }
@@ -1217,46 +1163,46 @@ function renderPbPlay() {
     pbCtx.fill(); pbCtx.stroke();
     pbCtx.setLineDash([]);
     pbCtx.fillStyle = '#FFD740';
-    pbCtx.font = `bold ${Math.max(9, radius * 0.6)}px Nunito`;
+    pbCtx.font = `bold ${Math.max(10, radius * 0.6)}px Nunito`;
     pbCtx.textAlign = 'center';
     pbCtx.fillText('THROWS', endPt[0] / 100 * w, endPt[1] / 100 * h + radius * 2.5);
   }
 
-  document.getElementById('pbCounter').textContent = `${pbIndex + 1} / ${PLAYS.length}`;
-  document.getElementById('pbPlayName').textContent = play.name;
-  document.getElementById('pbPlayDesc').textContent = play.desc;
-  updatePbDots();
-  renderPbLegend(play);
-}
-
-function renderPbLegend(play) {
-  const legend = document.getElementById('pbLegend');
-  const items = [];
-  items.push(`<span><span class="pb-legend-dot" style="background:${COLORS.qb};border:1px solid rgba(255,255,255,.4)"></span>QB</span>`);
+  const legY = h - Math.max(20, h * 0.04);
+  const legFontSize = Math.max(10, Math.min(13, w * 0.022));
+  pbCtx.fillStyle = 'rgba(0,0,0,.45)';
+  pbCtx.fillRect(0, legY - legFontSize - 4, w, h - legY + legFontSize + 8);
+  const legItems = [];
+  legItems.push({ color: COLORS.qb, label: 'QB', border: true });
   if (play.isTrickPass) {
-    items.push(`<span><span class="pb-legend-dot" style="background:${COLORS[play.isTrickPass]}"></span>★ ${POS_NAMES[play.isTrickPass]} throws</span>`);
+    legItems.push({ color: COLORS[play.isTrickPass], label: '★ Throws' });
   }
   const sorted = Object.entries(play.reads).sort((a,b) => a[1] - b[1]);
   sorted.forEach(([pos, num]) => {
-    items.push(`<span><span class="pb-legend-dot" style="background:${COLORS[pos]}"></span>${num} ${POS_NAMES[pos]}</span>`);
+    legItems.push({ color: COLORS[pos], label: `${num} ${POS_NAMES[pos]}` });
   });
-  legend.innerHTML = items.join('');
-}
-
-function buildPbDots() {
-  const dots = document.getElementById('pbDots');
-  dots.innerHTML = '';
-  PLAYS.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'pb-dot' + (i === pbIndex ? ' active' : '');
-    d.addEventListener('click', () => { pbIndex = i; renderPbPlay(); });
-    dots.appendChild(d);
-  });
-}
-
-function updatePbDots() {
-  document.querySelectorAll('.pb-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === pbIndex);
+  const dotR = Math.max(5, legFontSize * 0.45);
+  const totalLegW = legItems.reduce((sum, it) => {
+    pbCtx.font = `bold ${legFontSize}px Nunito`;
+    return sum + pbCtx.measureText(it.label).width + dotR * 2 + 16;
+  }, 0);
+  let legX = (w - totalLegW) / 2;
+  legItems.forEach(it => {
+    pbCtx.beginPath();
+    pbCtx.arc(legX + dotR, legY, dotR, 0, Math.PI * 2);
+    pbCtx.fillStyle = it.color;
+    pbCtx.fill();
+    if (it.border) {
+      pbCtx.strokeStyle = 'rgba(255,255,255,.4)';
+      pbCtx.lineWidth = 1;
+      pbCtx.stroke();
+    }
+    pbCtx.fillStyle = 'rgba(255,255,255,.7)';
+    pbCtx.font = `bold ${legFontSize}px Nunito`;
+    pbCtx.textAlign = 'left';
+    pbCtx.textBaseline = 'middle';
+    pbCtx.fillText(it.label, legX + dotR * 2 + 4, legY);
+    legX += pbCtx.measureText(it.label).width + dotR * 2 + 16;
   });
 }
 
@@ -1267,10 +1213,10 @@ function pbNav(dir) {
 
 /* Swipe support */
 let touchStartX = 0;
-document.getElementById('pbBody').addEventListener('touchstart', e => {
+pbCanvas.addEventListener('touchstart', e => {
   touchStartX = e.changedTouches[0].screenX;
 }, { passive: true });
-document.getElementById('pbBody').addEventListener('touchend', e => {
+pbCanvas.addEventListener('touchend', e => {
   const diff = touchStartX - e.changedTouches[0].screenX;
   if (Math.abs(diff) > 50) pbNav(diff > 0 ? 1 : -1);
 }, { passive: true });
