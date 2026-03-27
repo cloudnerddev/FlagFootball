@@ -428,7 +428,7 @@ footer {
 <!-- ═══ ANIMATED PLAYS ═══ -->
 <section class="section" id="plays">
   <div class="section-label">Offense</div>
-  <h2>Our 10 Plays</h2>
+  <h2>Our 12 Plays</h2>
   <p class="subtitle">Click any play to watch the routes animate. Numbers show the QB read order — look at 1 first, then 2, 3, 4.</p>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--qb-color);border-color:rgba(255,255,255,.35)"></div>QB</div>
@@ -444,7 +444,7 @@ footer {
 <!-- ═══ PLAYBOOK PLAYER CTA ═══ -->
 <section class="playbook-cta" id="playbook">
   <h2>Game-Day Playbook</h2>
-  <p>Open the full-screen playbook player to flip through all 10 plays on your phone during games. Turn your phone sideways for the best view!</p>
+  <p>Open the full-screen playbook player to flip through all 12 plays on your phone during games. Turn your phone sideways for the best view!</p>
   <button class="btn btn-primary" onclick="openPlaybook()" style="margin: 0 auto;">📱 Open Playbook Player</button>
   <div class="phone-hint">
     <span class="rotate-icon">📱</span> Best in landscape mode
@@ -585,7 +585,7 @@ footer {
   </div>
   <div class="pb-top">
     <span class="pb-title">GAME-DAY PLAYBOOK</span>
-    <span class="pb-counter" id="pbCounter">1 / 10</span>
+    <span class="pb-counter" id="pbCounter">1 / 12</span>
     <button class="pb-close" onclick="closePlaybook()" aria-label="Close">&#10005;</button>
   </div>
   <div class="pb-body" id="pbBody">
@@ -749,6 +749,34 @@ const PLAYS = [
     },
     isRun: true,
     reads: { rb:1, wr1:2, wr2:3, c:4 }
+  },
+  {
+    name: 'Double Pass',
+    desc: 'TRICK! QB hands off to WR Left behind the line — WR Left throws deep!',
+    tags: ['Trick','Deep'],
+    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
+    routes: {
+      wr1: [[14,66],[36,73]],
+      wr2: [[86,66],[86,18]],
+      c:   [[50,66],[68,42]],
+      rb:  [[50,80],[50,73],[74,56]]
+    },
+    reads: { wr2:1, c:2, rb:3 },
+    isTrickPass: 'wr1'
+  },
+  {
+    name: 'Reverse',
+    desc: 'TRICK! QB hands off to RB going right, RB hands off to WR Left going left!',
+    tags: ['Trick','Misdirection'],
+    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
+    routes: {
+      wr1: [[14,66],[14,72],[60,72],[8,30]],
+      wr2: [[86,66],[86,56],[72,56]],
+      c:   [[50,66],[62,58]],
+      rb:  [[50,80],[50,73],[60,73]]
+    },
+    isRun: true,
+    reads: { wr1:1, wr2:2, c:3, rb:4 }
   }
 ];
 
@@ -947,7 +975,9 @@ function buildPlayCards() {
 
 function getLabel(pos, play) {
   if (pos === 'qb') return 'QB';
-  return play.reads ? String(play.reads[pos]) : pos;
+  if (play.isTrickPass === pos) return '★';
+  if (play.reads && play.reads[pos] !== undefined) return String(play.reads[pos]);
+  return '';
 }
 
 function drawPlayFrame(ctx, w, h, play, progress) {
@@ -1082,12 +1112,13 @@ function renderPbPlay() {
   });
 
   if (play.isRun) {
+    const runPos = play.name === 'Reverse' ? 'wr1' : 'rb';
+    const runRoute = play.routes[runPos];
+    const endPt = runRoute[runRoute.length - 1];
     pbCtx.fillStyle = 'rgba(255,112,67,.2)';
     pbCtx.strokeStyle = 'rgba(255,112,67,.5)';
     pbCtx.lineWidth = 2;
     pbCtx.setLineDash([6,4]);
-    const rbRoute = play.routes.rb;
-    const endPt = rbRoute[rbRoute.length - 1];
     pbCtx.beginPath();
     pbCtx.arc(endPt[0] / 100 * w, endPt[1] / 100 * h, radius * 2, 0, Math.PI * 2);
     pbCtx.fill(); pbCtx.stroke();
@@ -1096,6 +1127,23 @@ function renderPbPlay() {
     pbCtx.font = `bold ${Math.max(9, radius * 0.6)}px Nunito`;
     pbCtx.textAlign = 'center';
     pbCtx.fillText('HANDOFF', endPt[0] / 100 * w, endPt[1] / 100 * h + radius * 2.5);
+  }
+
+  if (play.isTrickPass) {
+    const tpRoute = play.routes[play.isTrickPass];
+    const endPt = tpRoute[tpRoute.length - 1];
+    pbCtx.fillStyle = 'rgba(255,215,0,.2)';
+    pbCtx.strokeStyle = 'rgba(255,215,0,.5)';
+    pbCtx.lineWidth = 2;
+    pbCtx.setLineDash([6,4]);
+    pbCtx.beginPath();
+    pbCtx.arc(endPt[0] / 100 * w, endPt[1] / 100 * h, radius * 2, 0, Math.PI * 2);
+    pbCtx.fill(); pbCtx.stroke();
+    pbCtx.setLineDash([]);
+    pbCtx.fillStyle = '#FFD740';
+    pbCtx.font = `bold ${Math.max(9, radius * 0.6)}px Nunito`;
+    pbCtx.textAlign = 'center';
+    pbCtx.fillText('THROWS', endPt[0] / 100 * w, endPt[1] / 100 * h + radius * 2.5);
   }
 
   document.getElementById('pbCounter').textContent = `${pbIndex + 1} / ${PLAYS.length}`;
@@ -1109,6 +1157,9 @@ function renderPbLegend(play) {
   const legend = document.getElementById('pbLegend');
   const items = [];
   items.push(`<span><span class="pb-legend-dot" style="background:${COLORS.qb};border:1px solid rgba(255,255,255,.4)"></span>QB</span>`);
+  if (play.isTrickPass) {
+    items.push(`<span><span class="pb-legend-dot" style="background:${COLORS[play.isTrickPass]}"></span>★ ${POS_NAMES[play.isTrickPass]} throws</span>`);
+  }
   const sorted = Object.entries(play.reads).sort((a,b) => a[1] - b[1]);
   sorted.forEach(([pos, num]) => {
     items.push(`<span><span class="pb-legend-dot" style="background:${COLORS[pos]}"></span>${num} ${POS_NAMES[pos]}</span>`);
