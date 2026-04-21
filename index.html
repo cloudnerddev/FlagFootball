@@ -22,9 +22,9 @@
   --blue: #42A5F5;
   --qb-color: #1a1a1a;
   --c-color: #B0BEC5;
-  --wr1-color: #FFD740;
-  --wr2-color: #42A5F5;
-  --rb-color: #FF7043;
+  --p1-color: #FFD740;
+  --p2-color: #42A5F5;
+  --p3-color: #FF7043;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -464,15 +464,14 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ═══ ANIMATED PLAYS ═══ -->
 <section class="section" id="plays">
   <div class="section-label">Offense</div>
-  <h2>Our 12 Plays</h2>
-  <p class="subtitle">Click any play to watch the routes animate. Numbers show the QB read order — look at 1 first, then 2, 3, 4.</p>
+  <h2>Our 9 Plays</h2>
+  <p class="subtitle">Click any play to watch the routes animate. QB looks to Player 1 first, then Player 2, then Player 3.</p>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--qb-color);border-color:rgba(255,255,255,.35)"></div>QB</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--c-color)"></div>Center</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--wr1-color)"></div>WR Left</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--wr2-color)"></div>WR Right</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--rb-color)"></div>RB</div>
-    <div class="legend-item" style="margin-left:8px;color:rgba(255,255,255,.5)">1 = 1st read &rarr; 4 = last read</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-color)"></div>C (Center)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--p1-color)"></div>1 (1st Read)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--p2-color)"></div>2 (2nd Read)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--p3-color)"></div>3 (3rd Read)</div>
   </div>
   <div class="plays-grid" id="playsGrid"></div>
 </section>
@@ -480,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- ═══ PLAYBOOK PLAYER CTA ═══ -->
 <section class="playbook-cta" id="playbook">
   <h2>Game-Day Playbook</h2>
-  <p>Open the full-screen playbook player to flip through all 12 plays on your phone during games. Turn your phone sideways for the best view!</p>
+  <p>Open the full-screen playbook player to flip through all 9 plays on your phone during games. Turn your phone sideways for the best view!</p>
   <button class="btn btn-primary" onclick="openPlaybook()" style="margin: 0 auto;">📱 Open Playbook Player</button>
   <div class="phone-hint">
     <span class="rotate-icon">📱</span> Best in landscape mode
@@ -632,187 +631,148 @@ document.addEventListener('DOMContentLoaded', () => {
    y=0 is deep downfield, y=100 is behind offense
    ═══════════════════════════════════════════ */
 const COLORS = {
-  qb:  '#1a1a1a',
-  c:   '#B0BEC5',
-  wr1: '#FFD740',
-  wr2: '#42A5F5',
-  rb:  '#FF7043'
+  qb: '#1a1a1a',
+  c:  '#B0BEC5',
+  p1: '#FFD740',
+  p2: '#42A5F5',
+  p3: '#FF7043'
 };
 
-const POSITIONS = ['qb','c','wr1','wr2','rb'];
-const POS_NAMES = { qb:'QB', c:'Center', wr1:'WR Left', wr2:'WR Right', rb:'RB' };
+const POSITIONS = ['qb','c','p1','p2','p3'];
+const POS_NAMES = { qb:'QB', c:'C', p1:'1st Read', p2:'2nd Read', p3:'3rd Read' };
 
 const PLAYS = [
+  /* ── RUNNING PLAYS (1-3) ── */
+  {
+    name: 'Power Dive',
+    desc: 'Hand off to 1 straight up the middle. 2 leads the block behind. 3 stretches the defense wide.',
+    tags: ['Run','Inside'],
+    isRun: true,
+    start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[50,88], p3:[14,66] },
+    routes: {
+      qb: [[50,73],[50,77]],
+      c:  [[50,66],[50,58]],
+      p1: [[50,81],[50,73],[50,40]],
+      p2: [[50,88],[50,73],[52,55]],
+      p3: [[14,66],[14,28]]
+    },
+    reads: { p1:1, p2:2, p3:3 }
+  },
+  {
+    name: 'Sweep Right',
+    desc: 'Hand off to 1 who sweeps wide right. 2 leads the block to the edge. 3 clears the left side deep.',
+    tags: ['Run','Outside'],
+    isRun: true,
+    start: { qb:[50,73], c:[50,66], p1:[56,81], p2:[66,81], p3:[14,66] },
+    routes: {
+      qb: [[50,73],[56,74]],
+      c:  [[50,66],[62,60]],
+      p1: [[56,81],[56,73],[74,73],[94,46]],
+      p2: [[66,81],[76,66],[88,56]],
+      p3: [[14,66],[14,24]]
+    },
+    reads: { p1:1, p2:2, p3:3 }
+  },
+  {
+    name: 'Counter',
+    desc: 'QB shows right toward 2 as a fake, then hands off to 1 cutting back left. 3 clears the right side.',
+    tags: ['Run','Counter'],
+    isRun: true,
+    start: { qb:[50,73], c:[50,66], p1:[44,81], p2:[56,81], p3:[84,66] },
+    routes: {
+      qb: [[50,73],[54,73]],
+      c:  [[50,66],[38,60]],
+      p1: [[44,81],[50,73],[28,68],[10,46]],
+      p2: [[56,81],[64,73],[72,65]],
+      p3: [[84,66],[84,22]]
+    },
+    reads: { p1:1, p2:2, p3:3 }
+  },
+  /* ── RUN-PASS OPTIONS (4-6) ── */
+  {
+    name: 'RPO Slant',
+    desc: 'Read the defense: hand off to 1 up the middle OR throw the quick slant to 2. 3 goes deep as safety valve.',
+    tags: ['RPO','Quick'],
+    start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[14,66], p3:[82,66] },
+    routes: {
+      qb: [[50,73],[50,78]],
+      c:  [[50,66],[50,54]],
+      p1: [[50,81],[50,73],[50,52]],
+      p2: [[14,66],[14,54],[36,38]],
+      p3: [[82,66],[82,22]]
+    },
+    reads: { p1:1, p2:2, p3:3 }
+  },
+  {
+    name: 'RPO Out & Up',
+    desc: 'QB reads: hand off to 1 sweeping left OR throw the quick out to 2. 3 goes deep right to clear space.',
+    tags: ['RPO','Outside'],
+    start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[18,66], p3:[82,66] },
+    routes: {
+      qb: [[50,73],[50,78]],
+      c:  [[50,66],[60,58]],
+      p1: [[50,81],[50,73],[32,68],[14,50]],
+      p2: [[18,66],[18,44],[8,44]],
+      p3: [[82,66],[82,22]]
+    },
+    reads: { p1:1, p2:2, p3:3 }
+  },
+  {
+    name: 'RPO Screen',
+    desc: 'QB reads: hand off or quick screen to 1 releasing right. 2 crosses to clear defenders. 3 goes deep.',
+    tags: ['RPO','Screen'],
+    start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[14,66], p3:[82,66] },
+    routes: {
+      qb: [[50,73],[52,76]],
+      c:  [[50,66],[60,60]],
+      p1: [[50,81],[62,76],[80,66],[80,44]],
+      p2: [[14,66],[14,50],[70,38]],
+      p3: [[82,66],[82,20]]
+    },
+    reads: { p1:1, p2:2, p3:3 }
+  },
+  /* ── PASSING PLAYS (7-9) ── */
   {
     name: 'All Go',
-    desc: 'Every receiver sprints deep — great when you need a big play.',
+    desc: 'Everyone streaks deep! Hit 1 on the left post, 2 on the right, or 3 up the seam.',
     tags: ['Deep','Aggressive'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
+    start: { qb:[50,73], c:[50,66], p1:[14,66], p2:[86,66], p3:[50,80] },
     routes: {
-      qb:  [[50,73],[50,82]],
-      wr1: [[14,66],[14,12]],
-      wr2: [[86,66],[86,12]],
-      c:   [[50,66],[50,18]],
-      rb:  [[50,80],[50,73],[62,20]]
+      qb: [[50,73],[50,82]],
+      c:  [[50,66],[50,20]],
+      p1: [[14,66],[14,14]],
+      p2: [[86,66],[86,14]],
+      p3: [[50,80],[50,73],[50,24]]
     },
-    reads: { wr1:1, wr2:2, c:3, rb:4 }
+    reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'Quick Slants',
-    desc: 'Fast inside cuts — beat the defense before they react.',
-    tags: ['Quick','Short'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
+    name: 'Slant & Flat',
+    desc: 'Look 1 first on the sharp inside slant. If covered, dump to 2 in the flat. 3 is the deep safety valve.',
+    tags: ['Passing','Quick'],
+    start: { qb:[50,73], c:[50,66], p1:[14,66], p2:[86,66], p3:[50,80] },
     routes: {
-      qb:  [[50,73],[50,78]],
-      wr1: [[14,66],[14,56],[38,38]],
-      wr2: [[86,66],[86,56],[62,38]],
-      c:   [[50,66],[50,50]],
-      rb:  [[50,80],[50,73],[72,58]]
+      qb: [[50,73],[50,79]],
+      c:  [[50,66],[50,48]],
+      p1: [[14,66],[14,52],[42,36]],
+      p2: [[86,66],[86,54],[96,54]],
+      p3: [[50,80],[50,73],[50,30]]
     },
-    reads: { wr1:1, wr2:2, rb:3, c:4 }
+    reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'Out Routes',
-    desc: 'Receivers break to the sidelines — safe passes near the boundary.',
-    tags: ['Medium','Safe'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
+    name: 'Double Cross',
+    desc: 'Hit 1 crossing right or 2 crossing left to confuse the defense. If both are covered, 3 shoots up the seam.',
+    tags: ['Passing','Crossing'],
+    start: { qb:[50,73], c:[50,66], p1:[14,66], p2:[86,66], p3:[50,80] },
     routes: {
-      qb:  [[50,73],[50,80]],
-      wr1: [[14,66],[14,44],[4,44]],
-      wr2: [[86,66],[86,44],[96,44]],
-      c:   [[50,66],[35,50]],
-      rb:  [[50,80],[50,73],[68,54]]
+      qb: [[50,73],[50,80]],
+      c:  [[50,66],[50,46]],
+      p1: [[14,66],[14,54],[72,36]],
+      p2: [[86,66],[86,50],[26,32]],
+      p3: [[50,80],[50,73],[50,40]]
     },
-    reads: { wr1:1, wr2:2, rb:3, c:4 }
-  },
-  {
-    name: 'Crossing Routes',
-    desc: 'Receivers swap sides to confuse the defense — hard to cover!',
-    tags: ['Tricky','Medium'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[50,80]],
-      wr1: [[14,66],[14,56],[78,38]],
-      wr2: [[86,66],[86,52],[22,35]],
-      c:   [[50,66],[50,48]],
-      rb:  [[50,80],[50,73],[28,58]]
-    },
-    reads: { wr2:1, wr1:2, rb:3, c:4 }
-  },
-  {
-    name: 'Post & Corner',
-    desc: 'High-low deep stretch — one post, one corner, pick your shot.',
-    tags: ['Deep','Stretch'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[50,82]],
-      wr1: [[14,66],[14,44],[38,14]],
-      wr2: [[86,66],[86,44],[96,16]],
-      c:   [[50,66],[68,50]],
-      rb:  [[50,80],[50,73],[32,58]]
-    },
-    reads: { wr1:1, wr2:2, c:3, rb:4 }
-  },
-  {
-    name: 'Curl & Flat',
-    desc: 'Classic combo — curl brings the defender up, flat sneaks under.',
-    tags: ['Combo','Short'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[50,79]],
-      wr1: [[14,66],[14,38],[20,43]],
-      wr2: [[86,66],[86,56],[96,56]],
-      c:   [[50,66],[50,22]],
-      rb:  [[50,80],[50,73],[74,42],[80,47]]
-    },
-    reads: { wr1:1, rb:2, wr2:3, c:4 }
-  },
-  {
-    name: 'Screen Right',
-    desc: 'Quick pass to the RB swinging right — let them run in space.',
-    tags: ['Quick','Run After Catch'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[53,78]],
-      wr1: [[14,66],[14,20]],
-      wr2: [[86,66],[86,22]],
-      c:   [[50,66],[60,60]],
-      rb:  [[50,80],[62,76],[82,66],[82,42]]
-    },
-    reads: { rb:1, wr1:2, wr2:3, c:4 }
-  },
-  {
-    name: 'Trips Right Flood',
-    desc: 'Overload the right side with 3 receivers at different depths.',
-    tags: ['Formation','Flood'],
-    start: { qb:[50,73], c:[50,66], wr1:[68,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[50,80]],
-      wr1: [[68,66],[68,44],[90,18]],
-      wr2: [[86,66],[86,46],[80,46]],
-      c:   [[50,66],[78,54]],
-      rb:  [[50,80],[50,73],[18,22]]
-    },
-    reads: { wr2:1, wr1:2, c:3, rb:4 }
-  },
-  {
-    name: 'Double Post',
-    desc: 'Two receivers break to the middle deep — great against zone defense.',
-    tags: ['Deep','Zone Beater'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[50,82]],
-      wr1: [[14,66],[14,44],[36,14]],
-      wr2: [[86,66],[86,44],[64,14]],
-      c:   [[50,66],[50,44],[28,44]],
-      rb:  [[50,80],[50,73],[50,54]]
-    },
-    reads: { wr1:1, wr2:2, c:3, rb:4 }
-  },
-  {
-    name: 'RB Sweep',
-    desc: 'Handoff to the RB who sweeps wide right — a run play!',
-    tags: ['Run','Outside'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[58,73]],
-      wr1: [[14,66],[14,56],[28,56]],
-      wr2: [[86,66],[86,56],[72,56]],
-      c:   [[50,66],[60,60]],
-      rb:  [[50,80],[50,73],[68,73],[92,48]]
-    },
-    isRun: true,
-    reads: { rb:1, wr1:2, wr2:3, c:4 }
-  },
-  {
-    name: 'Double Pass',
-    desc: 'TRICK! QB hands off to WR Left behind the line — WR Left throws deep!',
-    tags: ['Trick','Deep'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[50,80] },
-    routes: {
-      qb:  [[50,73],[40,73]],
-      wr1: [[14,66],[36,73]],
-      wr2: [[86,66],[86,18]],
-      c:   [[50,66],[68,42]],
-      rb:  [[50,80],[50,73],[74,56]]
-    },
-    reads: { wr2:1, c:2, rb:3 },
-    isTrickPass: 'wr1'
-  },
-  {
-    name: 'Reverse',
-    desc: 'TRICK! RB takes handoff going left, hands off to WR Left running right into cleared space!',
-    tags: ['Trick','Misdirection'],
-    start: { qb:[50,73], c:[50,66], wr1:[14,66], wr2:[86,66], rb:[62,73] },
-    routes: {
-      qb:  [[50,73],[44,73]],
-      rb:  [[62,73],[38,73]],
-      wr1: [[14,66],[14,71],[38,71],[88,32]],
-      wr2: [[86,66],[86,22]],
-      c:   [[50,66],[72,28]]
-    },
-    isRun: true,
-    reads: { wr1:1, wr2:2, c:3, rb:4 }
+    reads: { p1:1, p2:2, p3:3 }
   }
 ];
 
@@ -1012,10 +972,12 @@ function buildPlayCards() {
   });
 }
 
-function getLabel(pos, play) {
+function getLabel(pos) {
   if (pos === 'qb') return 'QB';
-  if (play.isTrickPass === pos) return '★';
-  if (play.reads && play.reads[pos] !== undefined) return String(play.reads[pos]);
+  if (pos === 'c')  return 'C';
+  if (pos === 'p1') return '1';
+  if (pos === 'p2') return '2';
+  if (pos === 'p3') return '3';
   return '';
 }
 
@@ -1023,20 +985,20 @@ function drawPlayFrame(ctx, w, h, play, progress) {
   ctx.clearRect(0, 0, w, h);
   drawField(ctx, w, h);
   const radius = 14;
-  const allPos = ['qb','c','wr1','wr2','rb'];
+  const allPos = ['qb','c','p1','p2','p3'];
   allPos.forEach(pos => {
     if (!play.routes[pos]) return;
     const pts = play.routes[pos];
     const dashed = (pos === 'qb');
     const end = drawRoute(ctx, pts, w, h, COLORS[pos], 3, progress, dashed);
     if (progress > 0 && progress < 1 && end) {
-      drawPlayer(ctx, end[0], end[1], COLORS[pos], getLabel(pos, play), radius * 0.8);
+      drawPlayer(ctx, end[0], end[1], COLORS[pos], getLabel(pos), radius * 0.8);
     }
   });
   POSITIONS.forEach(pos => {
     const s = play.start[pos];
     if (progress === 0) {
-      drawPlayer(ctx, s[0] / 100 * w, s[1] / 100 * h, COLORS[pos], getLabel(pos, play), radius);
+      drawPlayer(ctx, s[0] / 100 * w, s[1] / 100 * h, COLORS[pos], getLabel(pos), radius);
     }
   });
   if (progress >= 1) {
@@ -1044,7 +1006,7 @@ function drawPlayFrame(ctx, w, h, play, progress) {
       if (!play.routes[pos]) return;
       const pts = play.routes[pos];
       const last = pts[pts.length - 1];
-      drawPlayer(ctx, last[0] / 100 * w, last[1] / 100 * h, COLORS[pos], getLabel(pos, play), radius);
+      drawPlayer(ctx, last[0] / 100 * w, last[1] / 100 * h, COLORS[pos], getLabel(pos), radius);
     });
   }
 }
@@ -1138,7 +1100,7 @@ function renderPbPlay() {
 
   const radius = Math.max(16, Math.min(w, h) * 0.04);
   const lineW = Math.max(3, Math.min(w, h) * 0.008);
-  const posOrder = ['qb','c','wr1','wr2','rb'];
+  const posOrder = ['qb','c','p1','p2','p3'];
   posOrder.forEach(pos => {
     if (!play.routes[pos]) return;
     drawFullRoute(pbCtx, play.routes[pos], w, h, COLORS[pos], lineW, undefined, pos === 'qb');
@@ -1146,11 +1108,11 @@ function renderPbPlay() {
 
   POSITIONS.forEach(pos => {
     const s = play.start[pos];
-    drawPlayer(pbCtx, s[0] / 100 * w, s[1] / 100 * h, COLORS[pos], getLabel(pos, play), radius);
+    drawPlayer(pbCtx, s[0] / 100 * w, s[1] / 100 * h, COLORS[pos], getLabel(pos), radius);
   });
 
   if (play.isRun) {
-    const runPos = play.name === 'Reverse' ? 'wr1' : 'rb';
+    const runPos = 'p1';
     const runRoute = play.routes[runPos];
     const endPt = runRoute[runRoute.length - 1];
     pbCtx.fillStyle = 'rgba(255,112,67,.2)';
@@ -1190,12 +1152,10 @@ function renderPbPlay() {
   pbCtx.fillRect(0, legY - legFontSize - 4, w, h - legY + legFontSize + 8);
   const legItems = [];
   legItems.push({ color: COLORS.qb, label: 'QB', border: true });
-  if (play.isTrickPass) {
-    legItems.push({ color: COLORS[play.isTrickPass], label: '★ Throws' });
-  }
+  legItems.push({ color: COLORS.c,  label: 'C' });
   const sorted = Object.entries(play.reads).sort((a,b) => a[1] - b[1]);
-  sorted.forEach(([pos, num]) => {
-    legItems.push({ color: COLORS[pos], label: `${num} ${POS_NAMES[pos]}` });
+  sorted.forEach(([pos]) => {
+    legItems.push({ color: COLORS[pos], label: POS_NAMES[pos] });
   });
   const dotR = Math.max(5, legFontSize * 0.45);
   const totalLegW = legItems.reduce((sum, it) => {
