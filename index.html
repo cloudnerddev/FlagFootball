@@ -644,7 +644,7 @@ const POS_NAMES = { qb:'QB', c:'C', p1:'1st Read', p2:'2nd Read', p3:'3rd Read' 
 const PLAYS = [
   /* ── RUNNING PLAYS (1-3) ── */
   {
-    name: 'Power Dive',
+    name: 'Rhino',
     desc: 'Hand off to 1 straight up the middle. 2 leads the block behind. 3 stretches the defense wide.',
     tags: ['Run','Inside'],
     isRun: true,
@@ -659,7 +659,7 @@ const PLAYS = [
     reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'Sweep Right',
+    name: 'Cheetah',
     desc: 'Hand off to 1 who sweeps wide right. 2 leads the block to the edge. 3 clears the left side deep.',
     tags: ['Run','Outside'],
     isRun: true,
@@ -674,7 +674,7 @@ const PLAYS = [
     reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'Counter',
+    name: 'Rambo',
     desc: 'QB shows right toward 2 as a fake, then hands off to 1 cutting back left. 3 clears the right side.',
     tags: ['Run','Counter'],
     isRun: true,
@@ -690,7 +690,7 @@ const PLAYS = [
   },
   /* ── RUN-PASS OPTIONS (4-6) ── */
   {
-    name: 'RPO Slant',
+    name: 'Maverick',
     desc: 'Read the defense: hand off to 1 up the middle OR throw the quick slant to 2. 3 goes deep as safety valve.',
     tags: ['RPO','Quick'],
     start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[14,66], p3:[82,66] },
@@ -704,7 +704,7 @@ const PLAYS = [
     reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'RPO Out & Up',
+    name: 'Falcon',
     desc: 'QB reads: hand off to 1 sweeping left OR throw the quick out to 2. 3 goes deep right to clear space.',
     tags: ['RPO','Outside'],
     start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[18,66], p3:[82,66] },
@@ -718,7 +718,7 @@ const PLAYS = [
     reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'RPO Screen',
+    name: 'Ghost',
     desc: 'QB reads: hand off or quick screen to 1 releasing right. 2 crosses to clear defenders. 3 goes deep.',
     tags: ['RPO','Screen'],
     start: { qb:[50,73], c:[50,66], p1:[50,81], p2:[14,66], p3:[82,66] },
@@ -733,7 +733,7 @@ const PLAYS = [
   },
   /* ── PASSING PLAYS (7-9) ── */
   {
-    name: 'All Go',
+    name: 'Blastoff',
     desc: 'Everyone streaks deep! Hit 1 on the left post, 2 on the right, or 3 up the seam.',
     tags: ['Deep','Aggressive'],
     start: { qb:[50,73], c:[50,66], p1:[14,66], p2:[86,66], p3:[50,80] },
@@ -747,7 +747,7 @@ const PLAYS = [
     reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'Slant & Flat',
+    name: 'Laser',
     desc: 'Look 1 first on the sharp inside slant. If covered, dump to 2 in the flat. 3 is the deep safety valve.',
     tags: ['Passing','Quick'],
     start: { qb:[50,73], c:[50,66], p1:[14,66], p2:[86,66], p3:[50,80] },
@@ -761,7 +761,7 @@ const PLAYS = [
     reads: { p1:1, p2:2, p3:3 }
   },
   {
-    name: 'Double Cross',
+    name: 'Tornado',
     desc: 'Hit 1 crossing right or 2 crossing left to confuse the defense. If both are covered, 3 shoots up the seam.',
     tags: ['Passing','Crossing'],
     start: { qb:[50,73], c:[50,66], p1:[14,66], p2:[86,66], p3:[50,80] },
